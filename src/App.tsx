@@ -1,9 +1,11 @@
+import QuestionDetailsPage from "./components/QuestionDetailsPage";
 import QuestionsGrid from "./components/QuestionsGrid";
+import questions from "./data/questions";
 
 function App() {
   return (
     <>
-      <QuestionsGrid />
+      <QuestionDetailsPage question={questions[0]} />
     </>
   );
 }
