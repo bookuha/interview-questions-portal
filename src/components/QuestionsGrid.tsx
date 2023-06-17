@@ -1,4 +1,4 @@
-import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
+import { Box, GridItem, Heading, SimpleGrid } from "@chakra-ui/react";
 import QuestionPreviewCell from "./QuestionPreviewCell";
 import { Question } from "../data/questions";
 
@@ -11,9 +11,11 @@ const QuestionsGrid = ({ title, questions }: Props) => {
   return (
     <Box paddingY="8px">
       <Heading padding={2}>{title}</Heading>
-      <SimpleGrid columns={{ sm: 5, md: 7, lg: 8, xl: 10 }}>
+      <SimpleGrid templateColumns="repeat(auto-fill, minmax(200px, 1fr))">
         {questions.map((q) => (
-          <QuestionPreviewCell question={q} />
+          <GridItem aspectRatio={1}>
+            <QuestionPreviewCell question={q} />
+          </GridItem>
         ))}
       </SimpleGrid>
     </Box>

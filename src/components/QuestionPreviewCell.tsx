@@ -8,7 +8,7 @@ interface Props {
 
 const QuestionPreviewCell = ({ question }: Props) => {
   const complexityMap: Record<QuestionComplexity, string> = {
-    easy: "	#228B22",
+    easy: "#228B22",
     medium: "orange",
     hard: "red",
     extreme: "purple",
@@ -20,7 +20,6 @@ const QuestionPreviewCell = ({ question }: Props) => {
       flexDirection="column"
       justifyContent="space-between"
       bg={complexityMap[question.complexity]}
-      aspectRatio="1/1"
       height="100%"
       padding={1}
       outline="1px solid black"
