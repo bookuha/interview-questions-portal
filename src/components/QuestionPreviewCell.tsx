@@ -1,4 +1,10 @@
-import { Text, Flex, HStack, IconButton, Box } from "@chakra-ui/react";
+import {
+  Text,
+  Flex,
+  HStack,
+  IconButton,
+  Card,
+} from "@chakra-ui/react";
 import { AiFillLike, AiOutlineComment } from "react-icons/ai";
 import { Question, QuestionComplexity } from "../data/questions";
 
@@ -7,38 +13,39 @@ interface Props {
 }
 
 const QuestionPreviewCell = ({ question }: Props) => {
-  const complexityMap: Record<QuestionComplexity, string> = {
-    easy: "#228B22",
-    medium: "orange",
-    hard: "red",
-    extreme: "purple",
-    undefined: "gray",
+  const complexityToColorMap: Record<QuestionComplexity, string> = {
+    easy: "#228B2244",
+    medium: "#ffbb0044",
+    hard: "#e4222244",
+    extreme: "#e422e444",
+    undefined: "#998c9944",
   };
 
   return (
-    <Flex
-      flexDirection="column"
-      justifyContent="space-between"
-      bg={complexityMap[question.complexity]}
+    <Card
       height="100%"
-      padding={1}
+      padding={2}
       outline="1px solid black"
+      borderRadius={4}
+      bg={complexityToColorMap[question.complexity]}
     >
-      <Text>{question.title}</Text>
-      <HStack justifyContent="center">
-        <HStack>
-          <IconButton icon={<AiFillLike />} aria-label={"Like button"} />
-          <Text>{question.likes}</Text>
+      <Flex flexDirection="column" justifyContent="space-between" height="100%">
+        <Text>{question.title}</Text>
+        <HStack justifyContent="center">
+          <HStack>
+            <IconButton icon={<AiFillLike />} aria-label={"Like button"} />
+            <Text>{question.likes}</Text>
+          </HStack>
+          <HStack>
+            <IconButton
+              icon={<AiOutlineComment />}
+              aria-label="Comments button"
+            />
+            <Text>{question.answers}</Text>
+          </HStack>
         </HStack>
-        <HStack>
-          <IconButton
-            icon={<AiOutlineComment />}
-            aria-label="Comments button"
-          />
-          <Text>{question.answers}</Text>
-        </HStack>
-      </HStack>
-    </Flex>
+      </Flex>
+    </Card>
   );
 };
 

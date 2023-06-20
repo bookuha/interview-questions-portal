@@ -64,7 +64,7 @@ const questions: Question[] = [
     title: "Что такое тип перечисления. Аттрибут [Flags]",
     likes: 0,
     answers: 0,
-    complexity: "easy",
+    complexity: "medium",
   },
 ];
 
