@@ -1,10 +1,14 @@
 import { Box, Flex, Heading} from "@chakra-ui/react";
-import StartingPageWelcomeCard from "../components/StartingPageWelcomeCard";
-import QuestionsGrid from "../components/QuestionsGrid";
+import StartingPageWelcomeCard from "../components/Legacy/StartingPageWelcomeCard.tsx";
+import QuestionsGrid from "../components/Legacy/QuestionsGrid.tsx";
 import questions from "../data/questions";
-import LinksList from "../components/LinksList";
+import LinksList from "../components/Legacy/LinksList.tsx";
+import {useAuthUser} from "react-auth-kit";
 
 const StartingPage = () => {
+    const user = useAuthUser();
+    console.log(user());
+
   return (
     <>
       <Flex gap={4} flexDirection={{ sm: "column", md: "row" }}>

@@ -6,7 +6,7 @@ import {
   Card,
 } from "@chakra-ui/react";
 import { AiFillLike, AiOutlineComment } from "react-icons/ai";
-import { Question, QuestionComplexity } from "../data/questions";
+import { Question, QuestionComplexity } from "../../data/questions.ts";
 
 interface Props {
   question: Question;

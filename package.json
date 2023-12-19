@@ -13,12 +13,22 @@
     "@chakra-ui/react": "^2.7.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@monaco-editor/react": "^4.6.0",
+    "@uiw/codemirror-theme-white": "^4.21.21",
+    "@uiw/react-codemirror": "^4.21.21",
+    "axios": "^1.6.2",
     "framer-motion": "^10.12.16",
     "i": "^0.3.7",
+    "moment": "^2.29.4",
     "npm": "^9.7.1",
     "react": "^18.2.0",
+    "react-auth-kit": "^2.12.7",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.9.0"
+    "react-hook-form": "^7.48.2",
+    "react-icons": "^4.9.0",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.20.0",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",

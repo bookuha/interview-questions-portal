@@ -5,8 +5,8 @@ import {
   Heading,
   SimpleGrid,
 } from "@chakra-ui/react";
-import QuestionPreviewCell from "./QuestionPreviewCell";
-import { Question } from "../data/questions";
+import QuestionPreviewCell from "./QuestionPreviewCell.tsx";
+import { Question } from "../../data/questions.ts";
 
 interface Props extends HTMLChakraProps<"div"> {
   title: string;
