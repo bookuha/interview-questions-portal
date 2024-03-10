@@ -17,10 +17,9 @@ const useCreateCommentary = (questionId: string) => {
 
   return useMutation({
     mutationFn: createCommentary,
-    // onSuccess: (data) => {
     // TODO: Do an optimistic update.
     //  RN it works fine since I invalidate question which makes page also rerender the comment section
-    //  },
+
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["questions"] });
       queryClient.invalidateQueries({ queryKey: ["questions", questionId] });
