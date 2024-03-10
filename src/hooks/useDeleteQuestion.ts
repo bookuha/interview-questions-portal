@@ -2,24 +2,21 @@ import { useMutation, useQueryClient } from "react-query";
 import apiClient from "../services/api-client.ts";
 import { Question } from "../models/Question.ts";
 
-const useLikeQuestion = (id: string) => {
+const useDeleteQuestion = () => {
   const queryClient = useQueryClient();
 
-  const likeQuestion = () => {
+  const deleteQuestion = (questionId: string) => {
     return apiClient
-      .put<Question>("questions" + "/" + id + "/" + "likes")
+      .delete<Question>("questions" + "/" + questionId)
       .then((res) => res.data);
   };
 
   return useMutation({
-    mutationFn: likeQuestion,
-    onSuccess: (data) => {
-      queryClient.setQueryData(["questions", id], data);
-    },
+    mutationFn: deleteQuestion,
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["questions"] });
     },
   });
 };
 
-export default useLikeQuestion;
+export default useDeleteQuestion;

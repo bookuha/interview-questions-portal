@@ -1,49 +1,134 @@
-import {Button, FormControl, FormHelperText, Heading, HStack, Input, Text, useToast, VStack} from "@chakra-ui/react";
-import {useNavigate} from "react-router-dom";
-import {useForm} from "react-hook-form";
-import {CategorySelectField} from "../components/CreateQuestionPage/CategorySelectField.tsx";
+import {
+  Box,
+  Button,
+  Divider,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  HStack,
+  Input,
+  Select,
+  Text,
+  Textarea,
+  useToast,
+  VStack,
+} from "@chakra-ui/react";
+import { RulesSection } from "../components/CreateQuestionPage/RulesSection.tsx";
+import { SubmitHandler, useForm } from "react-hook-form";
+import useCreateQuestion from "../hooks/useCreateQuestion.ts";
+import { useNavigate } from "react-router-dom";
+import useCategories from "../hooks/useCategories.ts";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-export interface CreateQuestionInputs {
-	title: string;
-	description: string;
-	categoryId: string;
-}
+const inputs = yup
+  .object({
+    title: yup
+      .string()
+      .required("This field is required.")
+      .min(10, "Title must be at least 10 characters long.")
+      .max(100, "Title must be at most 100 characters long."),
+    description: yup
+      .string()
+      .required("This field is required.")
+      .min(20, "Description must be at least 20 characters long.")
+      .max(600, "Description must be at most 600 characters long."),
+    categoryId: yup.string().required("Select category from the list."),
+  })
+  .required();
 
 export const CreateQuestionPage = () => {
-	const navigate = useNavigate();
-	const toast = useToast();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(inputs),
+  });
+  const { data: categories } = useCategories();
+  const { mutateAsync: create, isLoading: isCreating } = useCreateQuestion();
+  const toast = useToast();
+  const navigate = useNavigate();
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<CreateQuestionInputs>()
+  const onSubmit: SubmitHandler<{
+    title: string;
+    description: string;
+    categoryId: string;
+  }> = async (data) => {
+    try {
+      const createdQuestion = await create(data);
+      toast({ title: "Question created", status: "success" });
+      navigate("/questions/" + createdQuestion.id);
+    } catch (e) {
+      toast({ title: "Failed to create question", status: "error" });
+    }
+  };
 
-	return (
-		<>
-			<Heading>Let's create your question!</Heading>
+  return (
+    <>
+      <HStack paddingY="6vh" alignItems="top">
+        <Box flex="2">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <VStack alignItems="start" gap={1}>
+              <Box width="50%">
+                <FormControl>
+                  <FormLabel>Title</FormLabel>
+                  <Input {...register("title")} />
+                  <FormHelperText color="red.400">
+                    {errors.title?.message}
+                  </FormHelperText>
+                </FormControl>
+                <FormControl minWidth="100px" width="35%">
+                  <FormLabel>Category</FormLabel>
+                  <Select
+                    {...register("categoryId")}
+                    placeholder={"Select category"}
+                  >
+                    {categories?.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.title}
+                      </option>
+                    ))}
+                  </Select>
+                  <FormHelperText color="red.400">
+                    {errors.categoryId?.message}
+                  </FormHelperText>
+                </FormControl>
+              </Box>
+            </VStack>
 
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<VStack width="35vw" minWidth="300px" padding="5vw" bgColor="#222222" gap={6}>
-					<Text>Sign in</Text>
-					<FormControl>
-						<Input placeholder="Title" {...register("title", { required: true })} />
-						{errors.title ? <FormHelperText color="red.400">This field is required</FormHelperText> : <FormHelperText>Your profile name</FormHelperText>}
-					</FormControl>
-					<FormControl>
-						<Input placeholder="description" {...register("description", { required: true })} />
-						{errors.description ? <FormHelperText color="red.400">This field is required</FormHelperText> : <FormHelperText>The password</FormHelperText>}
-					</FormControl>
-					<FormControl>
-						<CategorySelectField/>
-					</FormControl>
-					<Button type="submit" width="100%" colorScheme="teal">Login</Button>
-					<HStack width="100%" justifyContent="space-between">
-						<Text fontSize="sm" color="gray.200">Forgot password?</Text>
-						<Text fontSize="sm" color="gray.200">Sign up</Text>
-					</HStack>
-				</VStack>
-			</form>
-	</>
-	)
-}
+            <Box paddingTop="3vh" />
+            <Divider />
+            <Box paddingTop="3vh" />
+            <FormControl>
+              <FormLabel>Description</FormLabel>
+              <Textarea rows={10} {...register("description")} />
+              <FormHelperText color="red.400">
+                {errors.description?.message}
+              </FormHelperText>
+            </FormControl>
+
+            <Box paddingTop="3vh" />
+            <Divider />
+            <Box paddingTop="3vh" />
+
+            <Button type="submit" colorScheme={"green"} isDisabled={isCreating}>
+              Create
+            </Button>
+          </form>
+
+          <Box paddingTop="3vh" />
+          <Divider />
+          <Box paddingTop="3vh" />
+
+          <Text color="gray.600">
+            Copyright ©️ 2023 IQP All rights reserved
+          </Text>
+        </Box>
+        <Box flex="1">
+          <RulesSection />
+        </Box>
+      </HStack>
+    </>
+  );
+};

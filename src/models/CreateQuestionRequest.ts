@@ -1,5 +1,5 @@
-export interface CreateQuestionRequest{
-    title: string;
-    description: string;
-    categoryId: string;
+export interface CreateQuestionRequest {
+  title: string;
+  description: string;
+  categoryId: string;
 }

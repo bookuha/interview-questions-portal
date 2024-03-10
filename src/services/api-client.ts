@@ -1,12 +1,24 @@
 import axios from "axios";
-import {AxiosResponse, AxiosError} from "axios"
+import { AxiosResponse, AxiosError } from "axios";
 
-export default axios.create({
-    baseURL: "https://localhost:44317/api/",
-    headers: {
-        "Content-type": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("_auth")
+const client = axios.create({
+  baseURL: import.meta.env.VITE_API_URL + "/api/",
+  headers: {
+    "Content-type": "application/json",
+  },
+});
+client.interceptors.request.use(
+  async (config) => {
+    const token = localStorage.getItem("_auth");
+
+    if (token) {
+      config.headers.Authorization = "Bearer " + token;
     }
-})
 
-export type {AxiosResponse, AxiosError}
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+export default client;
+export type { AxiosResponse, AxiosError };

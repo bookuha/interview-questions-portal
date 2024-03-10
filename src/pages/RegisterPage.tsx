@@ -7,8 +7,8 @@ import {
   Center,
   Text,
   Button,
-  HStack,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 import { useSignIn } from "react-auth-kit";
 import axios from "../services/api-client.ts";
@@ -16,10 +16,12 @@ import { useNavigate } from "react-router-dom";
 
 interface Inputs {
   nickname: string;
+  email: string;
   password: string;
+  status: number;
 }
 
-export const LoginPage = () => {
+export const RegisterPage = () => {
   const signIn = useSignIn();
   const navigate = useNavigate();
   const toast = useToast();
@@ -32,7 +34,7 @@ export const LoginPage = () => {
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
     axios
-      .post("auth/login", { ...data })
+      .post("auth/register", { ...data, status: 0 }) // TODO: A tweak. Once enums as strings supported on backend, it will be removed.
       .then((response) => {
         if (
           signIn({
@@ -43,9 +45,9 @@ export const LoginPage = () => {
           })
         ) {
           toast({
-            title: "Logged in",
+            title: "Signed up",
             description:
-              "You've successfully logged in as " +
+              "You've successfully signed in as" +
               response.data.userInfo.nickname,
             status: "success",
             duration: 5000,
@@ -53,6 +55,7 @@ export const LoginPage = () => {
             position: "top",
           });
           navigate("/");
+          window.location.reload();
         }
       })
       .catch((error) => {
@@ -70,7 +73,7 @@ export const LoginPage = () => {
           bgColor="#222222"
           gap={6}
         >
-          <Text>Sign in</Text>
+          <Text>Sign up</Text>
           <FormControl>
             <Input
               placeholder="Nickname"
@@ -82,6 +85,36 @@ export const LoginPage = () => {
               </FormHelperText>
             ) : (
               <FormHelperText>Your profile name</FormHelperText>
+            )}
+          </FormControl>
+          <FormControl>
+            <Input
+              placeholder="Email"
+              {...register("email", { required: true })}
+            />
+            {errors.email ? (
+              <FormHelperText color="red.400">
+                This field is required
+              </FormHelperText>
+            ) : (
+              <FormHelperText>Your email</FormHelperText>
+            )}
+          </FormControl>
+          <FormControl>
+            <Select
+              placeholder="Select status"
+              {...register("status", { required: true })}
+            >
+              <option value={0}>Self-Learning</option>
+              <option value={1}>Student</option>
+              <option value={2}>Working</option>
+            </Select>
+            {errors.status ? (
+              <FormHelperText color="red.400">
+                This field is required
+              </FormHelperText>
+            ) : (
+              <FormHelperText>Your status</FormHelperText>
             )}
           </FormControl>
           <FormControl>
@@ -99,16 +132,11 @@ export const LoginPage = () => {
             )}
           </FormControl>
           <Button type="submit" width="100%" colorScheme="teal">
-            Login
+            Register
           </Button>
-          <HStack width="100%" justifyContent="space-between">
-            <Text fontSize="sm" color="gray.200">
-              Forgot password?
-            </Text>
-            <Text fontSize="sm" color="gray.200">
-              Sign up
-            </Text>
-          </HStack>
+          <Text fontSize="sm" color="gray.200">
+            Login
+          </Text>
         </VStack>
       </form>
     </Center>

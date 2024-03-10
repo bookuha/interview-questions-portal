@@ -1,13 +1,13 @@
-import { Box, Flex, Heading} from "@chakra-ui/react";
-import StartingPageWelcomeCard from "../components/Legacy/StartingPageWelcomeCard.tsx";
-import QuestionsGrid from "../components/Legacy/QuestionsGrid.tsx";
+import { Box, Flex, Heading } from "@chakra-ui/react";
+import StartingPageWelcomeCard from "../components/StartingPage/StartingPageWelcomeCard.tsx";
+import QuestionsGrid from "../components/StartingPage/QuestionsGrid.tsx";
 import questions from "../data/questions";
-import LinksList from "../components/Legacy/LinksList.tsx";
-import {useAuthUser} from "react-auth-kit";
+import LinksList from "../components/StartingPage/LinksList.tsx";
+import { useAuthUser } from "react-auth-kit";
 
 const StartingPage = () => {
-    const user = useAuthUser();
-    console.log(user());
+  const user = useAuthUser();
+  console.log(user());
 
   return (
     <>

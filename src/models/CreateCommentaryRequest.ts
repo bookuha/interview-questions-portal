@@ -1,4 +1,4 @@
-export interface CreateCommentaryRequest{
-    content: string;
-    replyToId?: string;
+export interface CreateCommentaryRequest {
+  content: string;
+  replyToId?: string;
 }

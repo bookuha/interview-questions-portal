@@ -1,68 +1,99 @@
-import { Question} from "../models/Question.ts";
 import {
-  Badge,
   Box,
+  Button,
+  Divider,
   HStack,
-  Heading,
-  Icon,
-  Tab,
-  TabList,
-  Tabs,
+  Spinner,
   Text,
+  useToast,
 } from "@chakra-ui/react";
-import { AiFillLike } from "react-icons/ai";
+import { QuestionHeaderInfo } from "../components/QuestionDetailsPage/QuestionHeaderInfo.tsx";
+import { useNavigate, useParams } from "react-router-dom";
 import CommentsSection from "../components/QuestionDetailsPage/CommentsSection.tsx";
-import LinksList from "../components/Legacy/LinksList.tsx";
+import useQuestion from "../hooks/useQuestion.ts";
+import { AlsoCheckSection } from "../components/QuestionDetailsPage/AlsoCheckSection.tsx";
+import useDeleteQuestion from "../hooks/useDeleteQuestion.ts";
+import axios from "axios";
+import { useAuthUser } from "react-auth-kit";
 
-interface Props {
-  question: Question;
-}
+export const QuestionDetailsPage = () => {
+  const { questionId } = useParams();
 
-const QuestionDetailsPage = ({ question }: Props) => {
+  const { data: question, isLoading, error } = useQuestion(questionId!);
+  const { mutateAsync: deleteQuestion } = useDeleteQuestion();
+  const toast = useToast();
+  const navigate = useNavigate();
+  const user = useAuthUser();
+
+  if (isLoading) return <Spinner />;
+
+  if (error || !question) return <Text>Error!</Text>;
+
+  const onDelete = async () => {
+    try {
+      await deleteQuestion(question.id);
+      toast({
+        title: "Question deleted",
+        status: "success",
+      });
+      navigate("/questions");
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        toast({
+          title: "Failed to delete question: " + e.response?.data.detail,
+          status: "error",
+        });
+        console.error(e);
+      }
+    }
+  };
+
   return (
-    <Box>
-      <Tabs variant="unstyled">
-        <TabList>
-          <Tab>Info</Tab>
-          <Tab>Answers</Tab>
-        </TabList>
-      </Tabs>
-      <Heading size="lg">{`${question.id}. ${question.title}`}</Heading>
-      <HStack paddingY="10px" gap={4}>
-        <Badge fontSize="lg" variant="solid" colorScheme="green">
-          {question.complexity}
-        </Badge>
-        <HStack>
-          <Icon boxSize="7" as={AiFillLike} />
-          <Text>{question.likes}</Text>
-        </HStack>
+    <>
+      <HStack paddingY="6vh" alignItems="top">
+        <Box flex="2">
+          <QuestionHeaderInfo question={question} />
+
+          <Box paddingTop="3vh" />
+          <Divider />
+          <Box paddingTop="3vh" />
+
+          <Text paddingBottom={5} lineHeight={4}>
+            {question.description}
+          </Text>
+
+          <Box paddingTop="3vh" />
+          <Divider />
+          <Box paddingTop="3vh" />
+
+          <Text>Discussion ({question.commentariesCount})</Text>
+          <CommentsSection questionId={question.id} />
+
+          <Divider />
+          <Box paddingTop="3vh" />
+
+          <Text>Similar questions</Text>
+
+          <Box paddingTop="3vh" />
+          <Divider />
+          <Box paddingTop="3vh" />
+
+          {user()?.id === question.creatorId && (
+            <Box paddingY="3vh">
+              <Button colorScheme="red" onClick={onDelete}>
+                Delete
+              </Button>
+            </Box>
+          )}
+
+          <Text color="gray.600">
+            Copyright ©️ 2023 IQP All rights reserved
+          </Text>
+        </Box>
+        <Box flex="1">
+          <AlsoCheckSection />
+        </Box>
       </HStack>
-      <Text paddingY="15px" fontSize="md">
-          Назвіть основні принципи ООП, які ви знаєте. Поясніть детально кожен з них.
-          <br/> Чи часто вам доводиться порушувати ці принципи? Чому? <br/>
-          Які є альтернативи? Опишіть їх.
-          <br/> Які є недоліки ООП? Як їх уникнути?
-          <br/> Яка різниця між ООП і ФП? Які є переваги і недоліки кожного з них?
-      </Text>
-      <Heading size="md" color="gray.200">Discussion</Heading>
-      <CommentsSection paddingY="1vh" paddingLeft="1vw" />
-        <Heading size="md">See this</Heading>
-        <LinksList
-            links={[
-                { label: "Doc", url: "123" },
-                { label: "Metanit", url: "" },
-            ]}
-            paddingX="2vw"
-            flexDirection="row"
-            maxWidth="45vw"
-            linkChakraProps={{
-                fontSize: "lg",
-                color: "teal.400",
-                marginRight: "1vw",
-            }}
-        />
-    </Box>
+    </>
   );
 };
-
-export default QuestionDetailsPage;
