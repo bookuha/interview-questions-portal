@@ -13,7 +13,7 @@ export const TestRunOutput = ({ testRun }: Props) => {
     testRun.status === TestStatus.Pass ? "green" : "red";
   const outputIcon = testRun.status === TestStatus.Pass ? BsCheckCircle : BsXLg;
 
-  if (testRun.version >= 2 && testRun.tests.length > 0) {
+  if (testRun.version >= 2 && testRun.tests && testRun.tests.length > 0) {
     return (
       <List spacing={3}>
         {testRun.tests.map((test) => (
